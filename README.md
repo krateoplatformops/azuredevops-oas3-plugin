@@ -1,8 +1,7 @@
-# Demo Web Service
-
+# AzureDevOps OAS3 Plugin
 ## Overview
 
-This project is a Java Spring Boot application named "Demo Web Service" (azuredevops-oas3-plugin). It appears to be focused on managing pipeline permissions, likely for an Azure DevOps-like system.
+This project is a Java Spring Boot application named "AzureDevOps OAS3 Plugin" (azuredevops-oas3-plugin). 
 
 ## Project Structure
 
@@ -102,6 +101,70 @@ The API is documented using Swagger. You can find the Swagger JSON file at `swag
    - `PipelinePermission.java`
    - `Resource.java`
    - `ResourcePipelinePermissions.java`
+
+## OpenAPI Specification (OAS 3.0)
+
+This project leverages the `springdoc-openapi-starter-webmvc-ui` dependency to automatically generate OpenAPI Specification 3.0 documentation from the webservice code. This feature provides several benefits:
+
+1. **Auto-generated API Documentation**: The OpenAPI specification is automatically generated based on your Spring Boot controllers, models, and annotations.
+
+2. **Swagger UI Integration**: A Swagger UI is automatically made available to visualize and interact with your API's resources.
+
+3. **API First Development**: You can use the generated specification for API-first development practices, enabling better collaboration between frontend and backend teams.
+
+### Accessing the OpenAPI Specification
+
+Once your application is running, you can access the OpenAPI specification in different formats:
+
+- **JSON format**: `http://localhost:8080/v3/api-docs`
+- **YAML format**: `http://localhost:8080/v3/api-docs.yaml`
+
+### Swagger UI
+
+The Swagger UI provides a user-friendly interface to explore and test your API endpoints. You can access it at:
+
+`http://localhost:8080/swagger-ui.html`
+
+### Customizing the OpenAPI Generation
+
+You can customize the OpenAPI generation using properties in your `application.properties` file. Some useful properties include:
+
+```properties
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.swagger-ui.operationsSorter=method
+springdoc.swagger-ui.tagsSorter=alpha
+springdoc.swagger-ui.tryItOutEnabled=true
+springdoc.swagger-ui.filter=true
+```
+
+### Enhancing API Documentation
+
+To enhance your API documentation, you can use OpenAPI annotations in your controller classes and methods. For example:
+
+```java
+@RestController
+@RequestMapping("/api")
+@Tag(name = "Pipeline Permissions", description = "Endpoints for managing pipeline permissions")
+public class PipelinePermissionController {
+
+    @Operation(summary = "Get pipeline permissions", description = "Retrieves permissions for a specific pipeline")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved permissions",
+                     content = @Content(schema = @Schema(implementation = ResourcePipelinePermissions.class))),
+        @ApiResponse(responseCode = "404", description = "Pipeline not found")
+    })
+    @GetMapping("/permissions/{pipelineId}")
+    public ResponseEntity<ResourcePipelinePermissions> getPermissions(@PathVariable String pipelineId) {
+        // Method implementation
+    }
+}
+```
+
+### Further Customization
+
+For more advanced customization options and detailed usage, refer to the [springdoc-openapi documentation](https://springdoc.org/).
+
 
 ## Testing
 
