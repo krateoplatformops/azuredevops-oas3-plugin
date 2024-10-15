@@ -7,8 +7,4 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class PipelinePermission extends Permission {
     @JsonProperty("id")
     private Object id;
-
-    public String getId() {
-        return String.valueOf(id);
-    }
 }

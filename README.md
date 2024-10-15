@@ -1,48 +1,18 @@
-# Demo Web Service
+# AzureDevOps OAS3 Plugin
 
 ## Overview
 
-This project is a Java Spring Boot application named "Demo Web Service" (azuredevops-oas3-plugin). It appears to be focused on managing pipeline permissions, likely for an Azure DevOps-like system.
+This project is a Java Spring Boot application named "AzureDevOps OAS3 Plugin" (azuredevops-oas3-plugin). It is designed to address a specific issue with pipeline permissions in Azure DevOps environments.
 
-## Project Structure
+### Problem Statement
 
-```
-.
-├── Dockerfile
-├── HELP.md
-├── README.md
-├── mvnw
-├── mvnw.cmd
-├── pom.xml
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── krateo
-│   │   │       └── gen
-│   │   │           └── ws
-│   │   │               └── demo_ws
-│   │   │                   ├── AzuredevopsPluginApplication.java
-│   │   │                   ├── controller
-│   │   │                   │   └── PipelinePermissionCli.java
-│   │   │                   └── model
-│   │   │                       ├── IdentityRef.java
-│   │   │                       ├── Permission.java
-│   │   │                       ├── PipelinePermission.java
-│   │   │                       ├── Resource.java
-│   │   │                       └── ResourcePipelinePermissions.java
-│   │   └── resources
-│   │       ├── application.properties
-│   │       ├── static
-│   │       └── templates
-│   └── test
-│       └── java
-│           └── krateo
-│               └── gen
-│                   └── ws
-│                       └── demo_ws
-│                           └── AzuredevopsPluginApplicationTests.java
-└── swagger.json
-```
+In the `pipelinePermission` resource, when `authorized` is set to `false`, the API returns `none`. This results in continuous reconciliation due to the difference between the local and remote resources.
+
+### Solution
+
+This web service acts as an intermediary to properly manage pipeline permissions and resolve the reconciliation issue. It ensures that the local and remote resources match even when a pipeline is unauthorized.
+
+In this case, if the resource is set `authorized: false` in the body request, you will receive from AzureDevOps an incomplete response. The web service then fills this response with the request data to ensure consistency between local and remote resources.
 
 ## Prerequisites
 
@@ -95,13 +65,30 @@ The API is documented using Swagger. You can find the Swagger JSON file at `swag
 ## Main Components
 
 1. `AzuredevopsPluginApplication.java`: The main Spring Boot application class.
-2. `PipelinePermissionCli.java`: Controller handling pipeline permission operations.
+2. `PipelinePermissionCli.java`: Controller handling pipeline permission operations. This component is crucial for addressing the reconciliation issue.
 3. Model classes in the `model` package:
    - `IdentityRef.java`
    - `Permission.java`
-   - `PipelinePermission.java`
+   - `PipelinePermission.java`: Represents pipeline permissions and likely includes logic for handling the `authorized` flag.
    - `Resource.java`
-   - `ResourcePipelinePermissions.java`
+   - `ResourcePipelinePermissions.java`: Manages the overall pipeline permissions for resources.
+
+## OpenAPI Specification (OAS 3.0)
+
+This project leverages the `springdoc-openapi-starter-webmvc-ui` dependency to automatically generate OpenAPI Specification 3.0 documentation from the webservice code. 
+
+### Accessing the OpenAPI Specification
+
+Once your application is running, you can access the OpenAPI specification in different formats:
+
+- **JSON format**: `http://localhost:8080/v3/api-docs`
+- **YAML format**: `http://localhost:8080/v3/api-docs.yaml`
+
+### Swagger UI
+
+The Swagger UI provides a user-friendly interface to explore and test your API endpoints. You can access it at:
+
+`http://localhost:8080/swagger-ui.html`
 
 ## Testing
 
@@ -114,7 +101,3 @@ The project includes a test class `AzuredevopsPluginApplicationTests.java`. Run 
 ## Configuration
 
 Application configuration can be found in `src/main/resources/application.properties`.
-
-## Acknowledgments
-
-For more detailed information about using this application, please refer to HELP.md in the project root.
